@@ -1,0 +1,49 @@
+mongoDB coursework
+
+
+
+
+var regular = /^[0-9]*$/;
+db.userdata.find({}, {_id: 1, id_member: 1}).forEach(function(now){
+if(!regular.test(now.id_member) || now.id_member < 0){
+db.userdata.update({_id: now._id}, {$set: {id_member: 0}}, true, true); }})
+
+
+db.userdata.find({}, {_id: 1, text: 1}).forEach(function(now){
+if(!regular.test(now.text.length)){
+db.userdata.update({_id: now._id}, {$set: {text: "0"}}, true, true); }})
+
+db.userdata.find({}, {_id: 1, text: 1}).forEach(function(now){
+if(!regular.test(now.text.length)){
+db.userdata.update({_id: now._id}, {$set: {text: "0"}}, true, true); }})
+
+
+
+1. db.userdata.ensureIndex({id_member: 1})
+  db.userdata.distinct("id_member").length
+
+2. var total_tweets = db.userdata.find().count();
+  var top_10 =            db.userdata.aggregate([{$group:{_id:"$id_member",num_tweets:{$sum:1}}},{$sort:{num_t weets:-1}},{$limit:10}]);
+
+3. db.userdata.find().sort({timestamp: 1}).limit(1);
+  db.userdata.find().sort({timestamp: -1}).limit(1);
+
+4. db.userdata.count()
+
+5. Var sum = 0;
+  db.userdata.find({}, {id: 1, text: 1}).forEach(function(doc){
+  sum += doc.text.length;})
+
+7. var r7 = 0;
+  var re = new RegExp("#", "g");
+  db.userdata.find({}, {_id: 1, text: 1}).forEach(function(doc){
+  var temp = doc.text.match(re)	
+  if(temp !== null){r7 += temp.length; }})
+
+8. var England = 0, Scotland = 0, Welsh = 0, NorthernIreland = 0;
+  db.userdata.find({}, {geo_lat: 1, geo_lng: 1}).forEach(function(now){
+  if(now.geo_lat >= 55.5050122 && now.geo_lat <= 59.555683 && now.geo_lng >= -  5.599869 && now.geo_lng <= -0.1000345){Scotland++;}
+  else if(now.geo_lat >= 49.989798 && now.geo_lat <= 55.5050122 && now.geo_lng >= -3.120133 && now.geo_lng <= 1.906686){England++;}
+  else if(now.geo_lat >= 53.992946 && now.geo_lat <= 55.389216 && now.geo_lng >= -7.965313 && now.geo_lng <= -5.599869){NorthernIreland++;}
+  else if(now.geo_lat >= 49.98312 && now.geo_lat <= 53.65169 && now.geo_lng >= -6.201234 && now.geo_lng <= -3.112397){Welsh++;}})
+
